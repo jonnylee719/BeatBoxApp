@@ -34,6 +34,7 @@ public class BeatBox {
     Sequence sequence;
     Track track;
     JFrame theFrame;
+    Font bigFont;
     
     String[] instrumentNames = {"Bass Drum", "Closed Hi-Hat", "Open Hi-Hat", "Acoustic Snare", "Crash Cymbal", "Hand Clap", "High Tom", "Hi Bongo", "Maracas", "Whistle", "Low Conga", "Cowbell", "Vibraslap", "Low-mid Tom", "High Agogo", "Open Hi Conga"};
     int[] instruments = {35, 42, 46, 38, 49, 39, 50, 60, 70, 72, 64, 56, 58, 47, 67, 63};
@@ -43,6 +44,7 @@ public class BeatBox {
     }
     
     public void buildGUI(){
+        bigFont = new Font ("Serif",Font.BOLD ,30);
         theFrame = new JFrame("Cyber BeatBox");
         theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         BorderLayout layout = new BorderLayout();
@@ -51,30 +53,39 @@ public class BeatBox {
         
         checkboxList = new ArrayList<JCheckBox>();
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
+        buttonBox.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         JButton start = new JButton("Start");
+        start.setFont(bigFont);
         start.addActionListener(new MyStartListener());
         buttonBox.add(start);
         
         JButton stop = new JButton("Stop");
+        stop.setFont(bigFont);
         stop.addActionListener(new MyStopListener());
         buttonBox.add(stop);
         
         JButton upTempo = new JButton("Tempo Up");
+        upTempo.setFont(bigFont);
         upTempo.addActionListener(new MyUpTempoListener());
         buttonBox.add(upTempo);
         
         JButton downTempo = new JButton("Tempo Down");
+        downTempo.setFont(bigFont);
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
         
         JButton reset = new JButton("Reset");
+        reset.setFont(bigFont);
         reset.addActionListener(new MyResetListener());
         buttonBox.add(reset);
         
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for(int i = 0; i<16; i++){
-            nameBox.add(new Label (instrumentNames[i]));
+            Label label = new Label (instrumentNames[i]);
+            label.setFont(bigFont);
+            nameBox.add(label);
+            
         }
         
         background.add(BorderLayout.EAST, buttonBox);
@@ -83,8 +94,8 @@ public class BeatBox {
         theFrame.getContentPane().add(background);
         
         GridLayout grid = new GridLayout(16,16);
-        grid.setVgap(1);
-        grid.setHgap(2);
+        grid.setVgap(2);
+        grid.setHgap(4);
         mainPanel= new JPanel(grid);
         background.add(BorderLayout.CENTER, mainPanel);
         
@@ -97,7 +108,7 @@ public class BeatBox {
         
         setUpMidi();
         
-        theFrame.setBounds(50,50,300,300);
+        theFrame.setBounds(1000,500,800,800);
         theFrame.pack();
         theFrame.setVisible(true);
     }
