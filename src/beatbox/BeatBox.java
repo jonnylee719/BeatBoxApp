@@ -8,6 +8,12 @@ package beatbox;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javax.swing.*;
 import java.util.logging.Level;
@@ -79,6 +85,17 @@ public class BeatBox {
         reset.setFont(bigFont);
         reset.addActionListener(new MyResetListener());
         buttonBox.add(reset);
+        
+        JButton serializeIt = new JButton("Serialize It");
+        serializeIt.setFont(bigFont);
+        serializeIt.addActionListener(new MySerializeListener());
+        buttonBox.add(serializeIt);
+        
+        JButton restoreIt = new JButton("Restore It");
+        restoreIt.setFont(bigFont);
+        restoreIt.addActionListener(new MyRestoreListener());
+        buttonBox.add(restoreIt);
+        
         
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for(int i = 0; i<16; i++){
@@ -188,6 +205,50 @@ public class BeatBox {
                 JCheckBox c = checkboxList.get(i);
                 c.setSelected(false);
             }
+        }
+    }
+    
+    public class MySerializeListener implements ActionListener{
+        public void actionPerformed(ActionEvent a){
+            boolean[] checkboxState = new boolean[256];
+            for(int i = 0; i < 256; i++){
+                JCheckBox toBeChecked = (JCheckBox) checkboxList.get(i);
+                if(toBeChecked.isSelected())
+                    checkboxState[i]=true;
+            }
+            try{
+                FileOutputStream fileStream = new FileOutputStream(new File("Checkbox.ser"));
+                ObjectOutputStream os = new ObjectOutputStream(fileStream);
+                os.writeObject(checkboxState);
+                os.close();
+            }
+            catch(Exception e){
+                
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public class MyRestoreListener implements ActionListener {
+        public void actionPerformed(ActionEvent e){
+            boolean[] boxState = null;
+            try{
+                FileInputStream fileIn = new FileInputStream(new File("Checkbox.ser"));
+                ObjectInputStream is = new ObjectInputStream(fileIn);
+                boxState = (boolean[]) is.readObject();
+                is.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            for(int i = 0; i<256; i++){
+                JCheckBox check = (JCheckBox) checkboxList.get(i);
+                if(boxState[i])
+                    check.setSelected(true);
+                else
+                    check.setSelected(false);
+            }
+            sequencer.stop();
+            buildTrackAndStart();
         }
     }
     
